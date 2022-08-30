@@ -5,9 +5,9 @@ pragma solidity ^0.8.15; // Upwards of 0.8.15
 contract SimpleStorage {
     uint256 favoriteNumber;
 
-    function store(uint256 _favoriteNumber) public {
+    function store(uint256 _favoriteNumber) public virtual {
         favoriteNumber = _favoriteNumber;
-        favoriteNumber = favoriteNumber + 1;
+        // favoriteNumber = favoriteNumber + 1;
     }
 
     // view, pure do not spend gas. 'View' purely reads from the contract. Cannot update the blockchian. Pure functions

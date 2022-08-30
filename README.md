@@ -1,1 +1,1 @@
-# solidity-practice
+Learning Solidity

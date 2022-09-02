@@ -3,22 +3,29 @@ pragma solidity ^0.8.0;
 
 import "./PriceConverter.sol";
 
+error NotOwner();
+
 contract FundMe {
     using PriceConverter for uint256;
 
-    uint256 public minimumUSD = 10 * 1e18;
+    // Using constant keeps gas cost down, syntactically uppercase and underscores 
+    uint256 public constant MINIMUM_USD = 10 * 1e18;
 
     address[] public funders;
     mapping (address => uint256) public addressToAmountFunded;
 
-    address public owner;
+    // Immutability, also saves gas
+    address public immutable i_owner;
 
     constructor() {
-        owner = msg.sender;
+        i_owner = msg.sender;
     }
 
     function fund() public payable {
+        // Create custom error
         require(msg.value.getConversionRate() >= 1e18, "Not enough eth");
+        funders.push(msg.sender);
+        addressToAmountFunded[msg.sender] += msg.value;
     }
 
     function withdraw() public {
@@ -47,8 +54,18 @@ contract FundMe {
 
     // Modifier is the first code processed
     modifier onlyOwner {
-        require(msg.sender == owner);
+        // require(msg.sender == i_owner); Revert and require do the same thing
+        if (msg.sender != i_owner) { revert NotOwner(); } // Saves gas by remove strings as errors
         _; // This represents doing the rest of the code
+    }
+
+    // If someone sends funding to the contract, it can still be processed by one of the following transactions
+    receive() external payable {
+        fund();
+    }
+
+    fallback() external payable {
+        fund();
     }
 
 }

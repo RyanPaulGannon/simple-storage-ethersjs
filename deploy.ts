@@ -4,7 +4,7 @@ import { ethers } from "ethers"
 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL!)
-  // const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
+  // MetaMask wallet const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider)
   const encryptedJson = fs.readFileSync("./.encryptedKey.json", "utf8")
   let wallet = ethers.Wallet.fromEncryptedJsonSync(
     encryptedJson,
